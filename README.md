@@ -10,16 +10,6 @@ From raw JSON/CSV data to a deployed, interactive web app: this project covers t
 
 ---
 
-## 📱 App Preview
-
-| Predict Page | Dashboard Page |
-|---|---|
-| ![Predict page](assets/screenshots/predict.png) | ![Dashboard page](assets/screenshots/dashboard.png) |
-
-*(Screenshots: fill in `assets/screenshots/predict.png` and `assets/screenshots/dashboard.png` with your own — see note below.)*
-
----
-
 ## 📌 Project Overview
 
 **Goal:** Predict how long a food delivery will take (in minutes), using features like distance, weather, traffic density, order time, city type, vehicle type, and number of concurrent deliveries.
