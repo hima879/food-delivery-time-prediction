@@ -6,4 +6,5 @@ scikit-learn
 streamlit
 streamlit-folium
 folium
-openpyxl  # for Excel export (optional)plotly
+openpyxl
+plotly
