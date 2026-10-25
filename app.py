@@ -11,8 +11,6 @@ import time
 import streamlit as st
 import pandas as pd
 import numpy as np
-import folium
-from streamlit_folium import st_folium
 import plotly.graph_objects as go
 
 from src.utils import (
@@ -292,26 +290,52 @@ if page == "🔮 Predict":
                 gauge.update_layout(height=260, margin=dict(l=20, r=20, t=30, b=10))
                 st.plotly_chart(gauge, use_container_width=True)
 
-            st.markdown("### 🗺️ Simulated Route")
-            base_lat, base_lon = 12.9716, 77.5946
-            dest_lat = base_lat + distance_km * 0.009
-            dest_lon = base_lon + distance_km * 0.009
+            st.markdown("### 🛣️ Delivery Journey")
+            avg_speed_kmh = (distance_km / (pred_time / 60)) if pred_time > 0 else 0
 
-            m = folium.Map(location=[(base_lat + dest_lat) / 2, (base_lon + dest_lon) / 2], zoom_start=12, tiles="CartoDB positron")
-            folium.Marker(
-                [base_lat, base_lon], popup="Restaurant",
-                icon=folium.Icon(color="orange", icon="cutlery", prefix="fa"),
-            ).add_to(m)
-            folium.Marker(
-                [dest_lat, dest_lon], popup="Delivery Location",
-                icon=folium.Icon(color="green", icon="home", prefix="fa"),
-            ).add_to(m)
-            folium.PolyLine(
-                [[base_lat, base_lon], [dest_lat, dest_lon]],
-                color="#F09819", weight=4, opacity=0.8, dash_array="8",
-            ).add_to(m)
-            st_folium(m, width=None, height=400, returned_objects=[], use_container_width=True)
-            st.caption("Route is illustrative — a straight line scaled to the entered distance, not an actual road path.")
+            st.markdown(
+                f"""
+                <div style="
+                    background: rgba(240, 152, 25, 0.06);
+                    border: 1px solid rgba(240, 152, 25, 0.18);
+                    border-radius: 16px;
+                    padding: 1.6rem 1.8rem;
+                ">
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem;">
+                        <div style="text-align:center;">
+                            <div style="font-size:2.2rem;">🍽️</div>
+                            <div style="font-size:0.78rem; opacity:0.7; margin-top:0.2rem;">Restaurant</div>
+                        </div>
+                        <div style="flex:1; position:relative; height:4px; background:linear-gradient(90deg, #F09819, #11998e); border-radius:4px; margin:0 0.5rem;">
+                            <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); font-size:1.4rem;">🛵</div>
+                        </div>
+                        <div style="text-align:center;">
+                            <div style="font-size:2.2rem;">🏠</div>
+                            <div style="font-size:0.78rem; opacity:0.7; margin-top:0.2rem;">Customer</div>
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:space-around; margin-top:1.6rem; flex-wrap:wrap; gap:1rem;">
+                        <div style="text-align:center;">
+                            <div style="font-size:0.75rem; opacity:0.7; text-transform:uppercase; letter-spacing:0.05em;">Distance</div>
+                            <div style="font-size:1.3rem; font-weight:700;">{distance_km:.1f} km</div>
+                        </div>
+                        <div style="text-align:center;">
+                            <div style="font-size:0.75rem; opacity:0.7; text-transform:uppercase; letter-spacing:0.05em;">Est. Time</div>
+                            <div style="font-size:1.3rem; font-weight:700;">{pred_time:.0f} min</div>
+                        </div>
+                        <div style="text-align:center;">
+                            <div style="font-size:0.75rem; opacity:0.7; text-transform:uppercase; letter-spacing:0.05em;">Avg. Speed</div>
+                            <div style="font-size:1.3rem; font-weight:700;">{avg_speed_kmh:.1f} km/h</div>
+                        </div>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            st.caption(
+                "This is a schematic of the journey, not a real-world map — the form doesn't collect a city or "
+                "pickup/drop-off location, only a distance, so there's nothing to plot on an actual map."
+            )
 
 
 # --------------------------------------------------------------------------
